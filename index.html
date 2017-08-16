@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TotallyTrivia: The Game</title>
+
+  <!-- Bootstrap File -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+  <!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" type="text/css" href="assets/css/reset.css">  
+  <link rel="stylesheet" type="text/css" href="assets/css/totallytrivia.css">
+</head>
+<body>
+
+  <!-- Main Window -->
+  <div class="container">
+
+    <div class="header">
+      <h1 class="text-center header-title"><strong>Totally Trivia</strong></h1>     
+    </div>
+
+    <!-- (Current Stats and previous questions)-->
+    <div class="row">
+      <div class="col-md" style="padding: 0;">
+        <div class="panel panel-info display-area bg-warning">
+
+          <div class="panel-heading d-flex justify-content-end">                         
+            <div class="p-2 flex-first" id="correct">
+              <h3 class="title" id="allTimeScoreRight">Correct:</h3>
+            </div> 
+            <div class="p-2" id="incorrect">
+              <h3 class="title" id="allTimeWrong">Incorrect:</h3>
+            </div> 
+            <div class="p-2" id="percentage">
+              <h3 class="title" id="winPercent">Win percentage:</h3>
+            </div>
+            <div class="p-2 flex-last"  id="infoBtn">
+              <a href="#"><img src="assets/images/totallytrivia/info.png" class="infoIcon"></a>
+            </div>                                                                 
+          </div><!-- panel heading -->
+          <div class="panel-heading d-flex justify-content-center align-middle">
+              <div class="col-md-6 p-2 title"><h3>Questions asked</h3></div>
+              <div class="col-md-4 p-2 title"><h3>Answers</h3></div>
+              <div class="col-md-2 p-2 title"><h3>Score</h3></div>              
+          </div>
+          <div class="panel-body">
+            <div class="col-md" id="questionsAsked"></div>
+            <div class="col-md" id="answers"></div> 
+            <div class="col-md" id="singleScore"></div>                     
+          </div><!-- panel body -->            
+        </div><!-- panel -->  
+      </div><!-- column -->
+    </div> <!-- row -->
+  </div> <!-- container -->
+
+  <!-- trivia Window -->
+  <div class="container d-flex justify-content-center align-middle">
+    <div class="panel" id="triviaWindow">
+      <div class="panel-heading d-flex justify-content-around bg-info">
+        <div class="p-2 title"><h2 id="triviaWindowScore"></h2></div>
+        <div class="p-2 title"><h2 id="triviaWindowStatus"></h2></div>
+      </div> <!-- panel-heading -->     
+      <div class="panel-body ">
+        <div class="d-flex-row text-center" id="question">Current Question</div>
+        <div class="d-flex-column" id="answers">
+          <div class="p-2 answerField text-center" id="0" value="0"></div>
+          <div class="p-2 answerField text-center" id="1" value="1"></div> 
+          <div class="p-2 answerField text-center" id="2" value="2"></div>
+          <div class="p-2 answerField text-center" id="3" value="3"></div>
+          <div class="d-flex justify-content-center align-middle">
+            <button class="d-flex-column btn btn-info" id="triviaWindowCloseBtn">Close</button>
+          </div>                                       
+        </div> <!-- row -->
+      </div> <!-- panel-body -->
+    </div> <!-- panel -->
+  </div><!-- container -->
+
+
+
+  <!-- instructions -->
+  <div class="container d-flex justify-content-center align-middle">
+    <div class="panel" id="info">
+      <div class="info-heading panel-heading d-flex justify-content-end">
+        <div class="mr-auto p-2">
+          <h3 class="text-center">How to Play Totally Trivia </h3>
+        </div>
+        <div class="p-2"  id="closeBtn">
+            <a href="#" style="color: white">X</a>
+        </div>
+      </div> <!-- panel-heading -->     
+      <div class="panel-body ">
+        <ul style="padding: 20px;">
+          <li> Trivia game shows only one question until the player answers it or their time runs out. </li>
+          <li> If the player selects the correct answer, game informs you for choosing the right option. Next question automatically displays the next question without user input.
+          <li> The scenario is similar for wrong answers and time-outs.</li>
+          <li> If the player runs out of time, correct answer will automatically display. Next question automatically displays. </li>
+          <li> If the player chooses the wrong answer, correct answer will automatically display. Next question automatically displays.</li><li> Score of correct answers & incorrect answers are shown at the top of screen along with an option to restart the game.</li>
+        </ul>
+      </div> <!-- panel-body -->
+    </div> <!-- panel -->
+  </div><!-- container -->
+
+  <script src="assets/js/totallytrivia.js"></script> 
+
+</body>
+</html>
