@@ -15,7 +15,7 @@ $(document).ready(function() {
       var currentGame=0; 
 
 // ********** create game ************************//
-  createGame();
+  // createGame();
 
 // ********* on click events ********************//
 
@@ -36,19 +36,10 @@ $(document).ready(function() {
       }); 
       $("#triviaWindowCloseBtn").on("click", function(){
            $("#triviaWindow").fadeToggle();
-           $("#Game1l").click();
       });
-      $('#results li a').click(function(){
-          var t = $(this).attr('id');
-
-          if($(this).hasClass('inactive')){ //this is the start of our condition 
-            $('#results li a').addClass('inactive');           
-            $(this).removeClass('inactive');
-
-            $('.oldGames').hide();
-            $('#'+ t + 'C').fadeIn('slow');
-         }
-      });
+      $("#newGameBtn").on("click", function(){
+        resetGame();
+      });      
 
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
@@ -61,6 +52,8 @@ $(document).ready(function() {
        });
 
 // ********** functions **************** //
+
+
       function createGame(){
       // download questions and possilble answers from API then fill in Question
         $.ajax({
@@ -95,34 +88,32 @@ $(document).ready(function() {
           setTimeout(gameOver, timeBetweenQuestions);
         }
       }
+      function createTrivia(obj){
+      // for all objects returned by ajax, create trivia object and push into global trivia array for future use
+      for (var i = 0; i < obj.results.length; i++) {
+        var trivia = {
+          question: obj.results[i].question,
+          correct_answer: obj.results[i].correct_answer,
+          incorrect_answers : obj.results[i].incorrect_answers,
+          correctIndex : Math.round(Math.random()*3),
+          player_result:"",
 
-       function createTrivia(obj){
-        // for all objects returned by ajax, create trivia object and push into global trivia array for future use
-        for (var i = 0; i < obj.results.length; i++) {
-          var trivia = {
-            question: obj.results[i].question,
-            correct_answer: obj.results[i].correct_answer,
-            incorrect_answers : obj.results[i].incorrect_answers,
-            correctIndex : Math.round(Math.random()*3),
-            player_result:"",
-
-            getTriviaAnswers : function(){
-              var i=0;
-              var triviaAnswers = [];
-              for (var j = 0; j <= this.incorrect_answers.length; j++) {
-                if (j === this.correctIndex)
-                  triviaAnswers.push(this.correct_answer);
-                else {
-                  triviaAnswers.push(this.incorrect_answers[i++])
-                }
-              };
-              return triviaAnswers; 
-            }, //getTriviaAnswers() //
-          } // trivia object //
-          triviaArray.push(trivia);
-        } // for //
-       }
-
+          getTriviaAnswers : function(){
+            var i=0;
+            var triviaAnswers = [];
+            for (var j = 0; j <= this.incorrect_answers.length; j++) {
+              if (j === this.correctIndex)
+                triviaAnswers.push(this.correct_answer);
+              else {
+                triviaAnswers.push(this.incorrect_answers[i++])
+              }
+            };
+            return triviaAnswers; 
+          }, //getTriviaAnswers() //
+        } // trivia object //
+        triviaArray.push(trivia);
+      } // for //
+      }
       function evaluateGuess(guess){
       // evaulate guess compared to correct answer then update stats and status
         var playerAnswer = $(guess).attr("value");
@@ -151,7 +142,8 @@ $(document).ready(function() {
         for (var i = 0; i < maxPossibleAnswers; i++) {
             $("#"+i).css("opacity", 1);
         }
-      }              
+      }  
+
       function gameOver(){
         // update final score, disable answer fields and show reset button       
         $("#question").html("Game Over. All Questions Answered");
@@ -160,22 +152,10 @@ $(document).ready(function() {
         }
         $("#triviaWindowCloseBtn").css("display", "block");  
       }
-      function updateAnswerElement(){
-      // get current trivia object, update the Question and possible Answers
-      }
       function updateStats(){
         $("#scoreRight").html("Correct:" + scoreRight);
         $("#scoreWrong").html("Incorrect:" + maxQuestions -scoreRight);
         $("#winPercent").html("Winning Percentage:" + Math.round(scoreRight/maxQuestions)); 
-      }
-      function resetGame(){
-        // remove objects from trivia Array, reset htmlCall, reset scoreRight, create new game
-        for (var i = 0; i < triviaArray.length; i++) {
-          triviaArray.splice(i,1);
-        }
-        scoreRight=0;
-        htmlCall = getGameType();
-        createGame(htmlCall);
       }
       function updateMainStatsWindow(){
         var playerResultImage;
@@ -193,12 +173,13 @@ $(document).ready(function() {
                    "<strong>" + triviaArray[currentTriviaIndex].correct_answer + "</strong> " +
                    playerResultImage + "</p>";             
 
-        var gameTitle = "#Game" + currentGame + "C";
+        var gameTitle = "#Game" + currentGame + "d";
         $(gameTitle).append(results);
         $("#allTimeScoreRight").text("Correct:" + allTimeScoreRight);
         $("#allTimeWrong").text("Incorrect:"+ wrong); 
         $("#winPercent").text("Win Percentage:"+  percentage + "%");                
       }
+ 
       function isGameStarted(){
         // if new game hasn't started yet, create a new tab for questions and answers on the main page
         // create a new menu link and new tab content div to hold those Q&A then start game
@@ -207,26 +188,63 @@ $(document).ready(function() {
 
           currentGame ++;
           var gameTitle = "Game" + currentGame;
-          var aID = gameTitle + "c";
+          var aID = gameTitle + "a";
+          var lID = gameTitle + "l";
+          var dID = gameTitle + "d";          
 
-          var newA = $(document.createElement('a'));
+          var newA = $("<a>");
 
           newA.attr("data-toggle", "tab");
-          newA.attr("href",  "#"+ gameTitle +"C");
+          newA.attr("href",  "#"+ dID);
           newA.text(gameTitle);
           newA.attr("id", aID);
           newA.attr("class", "nav-link active");
           newA.attr("aria-expanded", "true");
 
-          var newLi = $("<li class='nav-item'>");          
+          var newLi = $("<li class='nav-item'>");
+          newLi.attr("id", lID);          
           newLi.attr("aria-expanded", "false");
 
           newLi.appendTo("#resultTabs").append(newA);
 
-          var newDiv = $("<div id='" + gameTitle + "C' class='tab-pane fade in active show'>");
-          newDiv.attr("aria-expanded", "true");          
+          var newDiv = $("<div id='" + gameTitle + "d' class='tab-pane fade in active show'>");
+          newDiv.attr("aria-expanded", "true");
+          newDiv.attr("id", dID);          
           $("#resultContent").append(newDiv);
-
         }
       }
+      function resetResultsTabs(){
+        for (var currentGameCounter = 1; currentGameCounter <= currentGame; currentGameCounter++) {
+          var gameTitle = "#Game" + currentGameCounter;
+          var aID = gameTitle + "a";
+          var lID = gameTitle + "l";
+          var dID = gameTitle + "d";
+          $(aID).attr("class", "nav-link");
+          $(aID).attr("aria-expanded", "false"); 
+
+          $(dID).attr("class", "tab-pane fade in");
+          $(dID).attr("aria-expanded", "false");                    
+        }
+      } 
+      function resetGame(){
+        // remove objects from trivia Array, reset htmlCall, reset scoreRight, create new game
+        
+        triviaArray.splice(0,triviaArray.length);
+        scoreRight=0;
+        currentTriviaIndex = 0;
+        gameStarted = false;
+        resetResultsTabs();
+        resetTriviaWindow();
+        htmlCall = getGameType();
+        createGame();
+      }      
+      function resetTriviaWindow(){
+        for (var i = 0; i < maxPossibleAnswers; i++) {
+            $("#"+i).css("display", "block");;
+        }
+        $("#triviaWindowCloseBtn").css("display", "none"); 
+        $("#triviaWindow").toggle();        
+      }
+
+
 });
