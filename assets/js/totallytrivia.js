@@ -11,7 +11,8 @@ $(document).ready(function() {
       var currentTriviaIndex = 0;
       const maxQuestions=10; 
       const maxPossibleAnswers=4;
-      const timeBetweenQuestions = 1000;   
+      const timeBetweenQuestions = 100;
+      var currentGame=0; 
 
 // ********** create game ************************//
   createGame();
@@ -20,6 +21,7 @@ $(document).ready(function() {
 
       // onclick event for answer radio element
       $(".answerField").on("click", function(){
+          isGameStarted();
           evaluateGuess(this);
       });
 
@@ -34,7 +36,20 @@ $(document).ready(function() {
       }); 
       $("#triviaWindowCloseBtn").on("click", function(){
            $("#triviaWindow").fadeToggle();
-      });              
+           $("#Game1l").click();
+      });
+      $('#results li a').click(function(){
+          var t = $(this).attr('id');
+
+          if($(this).hasClass('inactive')){ //this is the start of our condition 
+            $('#results li a').addClass('inactive');           
+            $(this).removeClass('inactive');
+
+            $('.oldGames').hide();
+            $('#'+ t + 'C').fadeIn('slow');
+         }
+      });
+
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
           var container = $("#info");
@@ -89,6 +104,7 @@ $(document).ready(function() {
             correct_answer: obj.results[i].correct_answer,
             incorrect_answers : obj.results[i].incorrect_answers,
             correctIndex : Math.round(Math.random()*3),
+            player_result:"",
 
             getTriviaAnswers : function(){
               var i=0;
@@ -110,18 +126,20 @@ $(document).ready(function() {
       function evaluateGuess(guess){
       // evaulate guess compared to correct answer then update stats and status
         var playerAnswer = $(guess).attr("value");
+        allTimeQuestionsPlayed++;
         var correctAnswerIndex = triviaArray[currentTriviaIndex].correctIndex;
         if (playerAnswer == correctAnswerIndex){
           scoreRight++;
           allTimeScoreRight++
+          triviaArray[currentTriviaIndex].player_result = "correct";
         }
+        else
+          triviaArray[currentTriviaIndex].player_result = "incorrect";          
 
         markCorrectAnswer();
         updateMainStatsWindow();
         currentTriviaIndex++;
         setTimeout(getQuestion, timeBetweenQuestions);
-        allTimeQuestionsPlayed++;
-
       }
       function markCorrectAnswer(){
         for (var i = 0; i < maxPossibleAnswers; i++) {
@@ -145,13 +163,11 @@ $(document).ready(function() {
       function updateAnswerElement(){
       // get current trivia object, update the Question and possible Answers
       }
-     
       function updateStats(){
         $("#scoreRight").html("Correct:" + scoreRight);
         $("#scoreWrong").html("Incorrect:" + maxQuestions -scoreRight);
         $("#winPercent").html("Winning Percentage:" + Math.round(scoreRight/maxQuestions)); 
       }
-
       function resetGame(){
         // remove objects from trivia Array, reset htmlCall, reset scoreRight, create new game
         for (var i = 0; i < triviaArray.length; i++) {
@@ -162,10 +178,55 @@ $(document).ready(function() {
         createGame(htmlCall);
       }
       function updateMainStatsWindow(){
-        $("#questionsAsked").append("<p>"+ triviaArray[currentTriviaIndex].question + "</p>");
-        $("#answers").append("<p>"+ triviaArray[currentTriviaIndex].correct_answer + "</p>");
-        $("#allTimeScoreRight").text("Correct:"+allTimeScoreRight);
-        $("#allTimeWrong").text("Incorrect:"+  allTimeQuestionsPlayed - allTimeScoreRight); 
-        $("#winPercent").text("Win Percentage:"+  Math.round(allTimeScoreRight/allTimeQuestionsPlayed) + "%");                
+        var playerResultImage;
+        var results;
+        var wrong = allTimeQuestionsPlayed - allTimeScoreRight;
+        var percentage = Math.round(allTimeScoreRight/allTimeQuestionsPlayed*100);
+
+        if (triviaArray[currentTriviaIndex].player_result == "correct")
+          playerResultImage = "<img src='assets/images/totallytrivia/correct.png' class='d-inline resultsIcon'/>"
+        else
+          playerResultImage = "<img src='assets/images/totallytrivia/wrong.png' class='d-inline resultsIcon'/>"
+
+        results = "<p>" + (currentTriviaIndex+1) + ": " +
+                   "<i>" + triviaArray[currentTriviaIndex].question + "</i> " + 
+                   "<strong>" + triviaArray[currentTriviaIndex].correct_answer + "</strong> " +
+                   playerResultImage + "</p>";             
+
+        var gameTitle = "#Game" + currentGame + "C";
+        $(gameTitle).append(results);
+        $("#allTimeScoreRight").text("Correct:" + allTimeScoreRight);
+        $("#allTimeWrong").text("Incorrect:"+ wrong); 
+        $("#winPercent").text("Win Percentage:"+  percentage + "%");                
+      }
+      function isGameStarted(){
+        // if new game hasn't started yet, create a new tab for questions and answers on the main page
+        // create a new menu link and new tab content div to hold those Q&A then start game
+        if (!gameStarted){
+          gameStarted = true;
+
+          currentGame ++;
+          var gameTitle = "Game" + currentGame;
+          var aID = gameTitle + "c";
+
+          var newA = $(document.createElement('a'));
+
+          newA.attr("data-toggle", "tab");
+          newA.attr("href",  "#"+ gameTitle +"C");
+          newA.text(gameTitle);
+          newA.attr("id", aID);
+          newA.attr("class", "nav-link active");
+          newA.attr("aria-expanded", "true");
+
+          var newLi = $("<li class='nav-item'>");          
+          newLi.attr("aria-expanded", "false");
+
+          newLi.appendTo("#resultTabs").append(newA);
+
+          var newDiv = $("<div id='" + gameTitle + "C' class='tab-pane fade in active show'>");
+          newDiv.attr("aria-expanded", "true");          
+          $("#resultContent").append(newDiv);
+
+        }
       }
 });

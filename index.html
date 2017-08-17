@@ -25,7 +25,7 @@
     </div>
 
     <!-- (Current Stats and previous questions)-->
-    <div class="row">
+    <div class="row" id="resultsWindow">
       <div class="col-md" style="padding: 0;">
         <div class="panel panel-info display-area bg-warning">
 
@@ -43,15 +43,18 @@
               <a href="#"><img src="assets/images/totallytrivia/info.png" class="infoIcon"></a>
             </div>                                                                 
           </div><!-- panel heading -->
-          <div class="panel-heading d-flex justify-content-center align-middle">
-              <div class="col-md-6 p-2 title"><h3>Questions asked</h3></div>
-              <div class="col-md-4 p-2 title"><h3>Answers</h3></div>
-              <div class="col-md-2 p-2 title"><h3>Score</h3></div>              
-          </div>
           <div class="panel-body">
-            <div class="col-md" id="questionsAsked"></div>
-            <div class="col-md" id="answers"></div> 
-            <div class="col-md" id="singleScore"></div>                     
+            <div class="container">
+
+<ul class="nav nav-tabs" id="resultTabs">
+
+</ul>
+
+              <div class="tab-content" id="resultContent">
+              </div>
+
+
+            </div>
           </div><!-- panel body -->            
         </div><!-- panel -->  
       </div><!-- column -->
@@ -59,7 +62,7 @@
   </div> <!-- container -->
 
   <!-- trivia Window -->
-  <div class="container d-flex justify-content-center align-middle">
+  <div class="container d-flex justify-content-center align-middle" style="position: relative;">
     <div class="panel" id="triviaWindow">
       <div class="panel-heading d-flex justify-content-around bg-info">
         <div class="p-2 title"><h2 id="triviaWindowScore"></h2></div>
