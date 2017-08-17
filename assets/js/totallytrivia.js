@@ -38,7 +38,7 @@ $(document).ready(function() {
            $("#triviaWindow").fadeToggle();
       });
       $("#newGameBtn").on("click", function(){
-        resetGame();
+        $("#gameSelect").fadeToggle(); 
       });      
 
       $(document).mouseup(function(e){

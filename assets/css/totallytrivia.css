@@ -75,12 +75,10 @@ tbody {
   margin: 0;
 }
 
-
-
 /********** panel ***********/
 .panel-heading{
   border-radius: 10px 10px 0 0;
-  border-color: #ffffd2;
+  border-color: teal!important;
 }
 .panel {
   width: 100%;
@@ -145,8 +143,13 @@ button {
   position: fixed; 
   border: solid 2px;
   border-radius: 15px; 
-  top:25px;   
+  top:25px; 
+  display: none;  
  }
+ #triviaWindowScore, #triviaWindowStatus{
+  color:teal;
+ }
+
  .answerField{
   font-size: 40px;
   color: #ffffd2;
@@ -175,4 +178,17 @@ button {
 
 .tab-pane{
   padding: 15px;
+}
+#gameSelect{
+  opacity: 0.95; 
+  color:teal;
+  background: #fff;
+  z-index: 100;
+  position: fixed; 
+  border-radius: 15px; 
+  top:25px; 
+  display: none;  
+  width: 50%;
+  height: 300px;
+  border-style: dotted;
 }
