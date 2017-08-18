@@ -4,19 +4,21 @@ $(document).ready(function() {
       var htmlCall = ""; //the general query call to the api
       var triviaArray = []; //array holds trivia objects
       var gameStarted = false; // game starts when strike button is hit and pauses when choosing new opponent
-      var gameLost = false; // only triggers when player loses
-      var newGame = true; // only updates when reset button hit
+      // var gameLost = false; // only triggers when player loses
+      // var newGame = true; // only updates when reset button hit
       var scoreRight = 0;
+      var currentCategory=0;
+      var disabledCategories = [[29,"easy"]];
+      var currentTriviaIndex = 0;      
       var allTimeQuestionsPlayed = 0;
       var allTimeScoreRight = 0;
-      var currentTriviaIndex = 0;
       const maxQuestions=10; 
       const maxPossibleAnswers=4;
       const timeBetweenQuestions = 100;
       var currentGame=0; 
 
 // ********** create game ************************//
-  // createGame();
+
 
 // ********* on click events ********************//
 
@@ -29,23 +31,36 @@ $(document).ready(function() {
       $("#infoBtn").on("click", function(){
            $("#info").fadeToggle();
       });
-      $("#closeBtn").on("click", function(){
+      $("#infoWindowCloseBtn").on("click", function(){
            $("#info").fadeToggle();
       });
-      $("#resetBtn").on("click", function(){
-           resetGame();
-      }); 
+
       $("#triviaWindowCloseBtn").on("click", function(){
-           $("#triviaWindow").fadeToggle();
+           // $("#triviaWindow").toggle(false);
       });
       $("#newGameBtn").on("click", function(){
-        $("#gameSelect").fadeToggle(); 
+        $("#gameSelect").fadeToggle(true);
+        //reset the selection pulldowns from the gametype Window
+        $("#catSelect").val('-1'); 
+        $("#catDifficulty").val('-1');            
       });      
-      $("#gameSelectForm").submit(function(){
+      $("#gameSelectForm").submit(function(events){
+        event.preventDefault();  
         setGameType(this);
-        $("#triviaWindow").fadeToggle();
-        $("#gameSelect").toggle();                
+        callAPI();
       });
+      $("#catSelect").on("change", function(){
+         disableAnyErrantDifficultiesForSelection(this);
+         if ($("#catDifficulty").val() != null ){
+          $("#submitBtn").prop("disabled",false)
+         }
+      });
+      $("#catDifficulty").on("change", function(){
+         if ($("#catSelect").val()!= null  ){
+          $("#submitBtn").prop("disabled",false)
+         }
+      });
+ 
 
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
@@ -59,26 +74,64 @@ $(document).ready(function() {
 
 // ********** functions **************** //
 
+      function setGameType(obj){
+        currentCategory = obj.childNodes[3].value;
+        currentCategoryDifficulty =  obj.childNodes[9].value;
 
-      function createGame(){
+        htmlCall="https://opentdb.com/api.php?amount=10&category=" + 
+                      obj.childNodes[3].value + 
+                      "&difficulty=" +
+                      obj.childNodes[9].value + "&type=multiple";
+      }
+      function callAPI(){
       // download questions and possilble answers from API then fill in Question
         $.ajax({
           url: htmlCall,
           method: "GET"
         }).done(function(response) {
-          createTrivia(response);
-          setQuestion(currentTriviaIndex);
+          if (!response.response_code){  // if there were no errors from the call then setup game
+            resetResultsTabs();
+            $("#triviaWindow").fadeToggle(true);
+            $("#gameSelect").fadeToggle(false);
+            resetVars();          
+            createTriviaArray(response);
+            getAQuestion();
+          }
+          else{  //no questions found, disable category for future selections
+            alert(" no questions found for that category. Please try again");
+            disabledCategories.push([$("#catSelect").val(),$("#catDifficulty").val()]);
+          }
         });
       }
-      function setGameType(obj){
-        htmlCall="https://opentdb.com/api.php?amount=10&category=" + 
-                      obj.childNodes[3].value + 
-                      "&difficulty=" +
-                      obj.childNodes[9].value + "&type=multiple";
-        createGame();
+      function createTriviaArray(obj){
+      // for all objects returned by ajax, create trivia object and push into global trivia array for future use
+        for (var i = 0; i < obj.results.length; i++) {
+          var trivia = {
+            question: obj.results[i].question,
+            correct_answer: obj.results[i].correct_answer,
+            incorrect_answers : obj.results[i].incorrect_answers,
+            correctIndex : Math.round(Math.random()*3),
+            player_result:"",
+
+            getTriviaAnswers : function(){
+              var i=0;
+              var triviaAnswers = [];
+              for (var j = 0; j <= this.incorrect_answers.length; j++) {
+                if (j === this.correctIndex)
+                  triviaAnswers.push(this.correct_answer);
+                else {
+                  triviaAnswers.push(this.incorrect_answers[i++])
+                }
+              };
+              return triviaAnswers; 
+            }, //getTriviaAnswers() //
+          } // trivia object //
+          triviaArray.push(trivia);
+        } // for //
       }
-      // get current trivia array index and update main screen
-      function setQuestion(){
+
+      function getAQuestion(){
+      // get a question and possible answers from current trivia array index and update main screen
         if (currentTriviaIndex < maxQuestions){         
           unMarkCorrectAnswer(); //unmark from any previous question
           $("#triviaWindowScore").html("Score: " + scoreRight); 
@@ -96,32 +149,7 @@ $(document).ready(function() {
           setTimeout(gameOver, timeBetweenQuestions);
         }
       }
-      function createTrivia(obj){
-      // for all objects returned by ajax, create trivia object and push into global trivia array for future use
-      for (var i = 0; i < obj.results.length; i++) {
-        var trivia = {
-          question: obj.results[i].question,
-          correct_answer: obj.results[i].correct_answer,
-          incorrect_answers : obj.results[i].incorrect_answers,
-          correctIndex : Math.round(Math.random()*3),
-          player_result:"",
 
-          getTriviaAnswers : function(){
-            var i=0;
-            var triviaAnswers = [];
-            for (var j = 0; j <= this.incorrect_answers.length; j++) {
-              if (j === this.correctIndex)
-                triviaAnswers.push(this.correct_answer);
-              else {
-                triviaAnswers.push(this.incorrect_answers[i++])
-              }
-            };
-            return triviaAnswers; 
-          }, //getTriviaAnswers() //
-        } // trivia object //
-        triviaArray.push(trivia);
-      } // for //
-      }
       function evaluateGuess(guess){
       // evaulate guess compared to correct answer then update stats and status
         var playerAnswer = $(guess).attr("value");
@@ -138,7 +166,7 @@ $(document).ready(function() {
         markCorrectAnswer();
         updateMainStatsWindow();
         currentTriviaIndex++;
-        setTimeout(setQuestion, timeBetweenQuestions);
+        setTimeout(getAQuestion, timeBetweenQuestions);
       }
       function markCorrectAnswer(){
         for (var i = 0; i < maxPossibleAnswers; i++) {
@@ -153,12 +181,12 @@ $(document).ready(function() {
       }  
 
       function gameOver(){
-        // update final score, disable answer fields and show reset button       
-        $("#question").html("Game Over. All Questions Answered");
-        for (var i = 0; i < maxPossibleAnswers; i++) {
-            $("#"+i).css("display", "none");;
-        }
-        $("#triviaWindowCloseBtn").css("display", "block");  
+        // game is done. push the category and difficulty to disabled array so no selection for future choice
+        // reset selection pulldown for next game
+        disabledCategories.push([$("#catSelect").val(),$("#catDifficulty").val()]);         
+        $("#triviaWindow").fadeToggle(false);
+        $("#catSelect").val('-1'); 
+        $("#catDifficulty").val('-1');         
       }
       function updateStats(){
         $("#scoreRight").html("Correct:" + scoreRight);
@@ -206,19 +234,19 @@ $(document).ready(function() {
           newA.attr("href",  "#"+ dID);
           newA.text(gameTitle);
           newA.attr("id", aID);
-          newA.attr("class", "nav-link active");
-          newA.attr("aria-expanded", "true");
+          newA.attr("class", "nav-link");
+          // newA.attr("aria-expanded", "true");
 
-          var newLi = $("<li class='nav-item'>");
+          var newLi = $("<li class='nav-item active'>");
           newLi.attr("id", lID);          
-          newLi.attr("aria-expanded", "false");
+          // newLi.attr("aria-expanded", "false");
 
           newLi.appendTo("#resultTabs").append(newA);
 
-          var newDiv = $("<div id='" + gameTitle + "d' class='tab-pane fade in active show'>");
-          newDiv.attr("aria-expanded", "true");
+          var newDiv = $("<div id='" + gameTitle + "d' class='tab-pane fade in active'>");
+          // newDiv.attr("aria-expanded", "true");
           newDiv.attr("id", dID);          
-          $("#resultContent").append(newDiv);
+          $("#resultContent").append(newDiv);            
         }
       }
       function resetResultsTabs(){
@@ -227,32 +255,33 @@ $(document).ready(function() {
           var aID = gameTitle + "a";
           var lID = gameTitle + "l";
           var dID = gameTitle + "d";
-          $(aID).attr("class", "nav-link");
-          $(aID).attr("aria-expanded", "false"); 
-
+          // $(aID).attr("class", "nav-link");
+          // $(aID).attr("aria-expanded", "false"); 
+          $(lID).attr("class", "");
           $(dID).attr("class", "tab-pane fade in");
-          $(dID).attr("aria-expanded", "false");                    
+          // $(dID).attr("aria-expanded", "false");                    
         }
       } 
-      function resetGame(){
-        // remove objects from trivia Array, reset htmlCall, reset scoreRight, create new game
-        
-        triviaArray.splice(0,triviaArray.length);
-        scoreRight=0;
-        currentTriviaIndex = 0;
+      function resetVars(){
+        triviaArray.splice(0, triviaArray.length);
         gameStarted = false;
-        resetResultsTabs();
-        resetTriviaWindow();
-        // htmlCall = setGameType();
-        createGame();
-      }      
-      function resetTriviaWindow(){
-        for (var i = 0; i < maxPossibleAnswers; i++) {
-            $("#"+i).css("display", "block");;
-        }
-        $("#triviaWindowCloseBtn").css("display", "none"); 
-        $("#triviaWindow").toggle();        
+        scoreRight = 0;
+        currentTriviaIndex = 0; 
       }
-
+      function disableAnyErrantDifficultiesForSelection(obj){
+        for (var i = 0; i < disabledCategories.length; i++) {
+          // if there are any difficulty choice that previously brought up no questions for this category, disable it else enable all of them
+          if ($("#catSelect").val() == disabledCategories[i][0]){
+              var disabledDiff = "#diff" + disabledCategories[i][1];
+              $(disabledDiff).prop('disabled', true);
+          }
+          else{
+            $("#diffany").prop('disabled', false);
+            $("#diffeasy").prop('disabled', false);
+            $("#diffmedium").prop('disabled', false);
+            $("#diffhard").prop('disabled', false);                        
+          }
+        }
+      }
 
 });

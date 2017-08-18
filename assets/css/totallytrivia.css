@@ -141,8 +141,8 @@ button {
   width: 90%;
   z-index: 99;
   position: fixed; 
-  top:25px; 
-  display: none;  
+  top:25px;
+  display: none; 
  }
  #triviaWindowScore, #triviaWindowStatus{
   color:teal;
