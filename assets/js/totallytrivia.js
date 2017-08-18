@@ -1,6 +1,7 @@
 // JavaScript function that wraps everything
 $(document).ready(function() {
 
+      var htmlCall = ""; //the general query call to the api
       var triviaArray = []; //array holds trivia objects
       var gameStarted = false; // game starts when strike button is hit and pauses when choosing new opponent
       var gameLost = false; // only triggers when player loses
@@ -40,6 +41,11 @@ $(document).ready(function() {
       $("#newGameBtn").on("click", function(){
         $("#gameSelect").fadeToggle(); 
       });      
+      $("#gameSelectForm").submit(function(){
+        setGameType(this);
+        $("#triviaWindow").fadeToggle();
+        $("#gameSelect").toggle();                
+      });
 
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
@@ -57,20 +63,22 @@ $(document).ready(function() {
       function createGame(){
       // download questions and possilble answers from API then fill in Question
         $.ajax({
-          url: getGameType(),
+          url: htmlCall,
           method: "GET"
         }).done(function(response) {
           createTrivia(response);
-          getQuestion(currentTriviaIndex);
+          setQuestion(currentTriviaIndex);
         });
       }
-      function getGameType(){
-        var htmlCall="https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
-
-        return htmlCall;
+      function setGameType(obj){
+        htmlCall="https://opentdb.com/api.php?amount=10&category=" + 
+                      obj.childNodes[3].value + 
+                      "&difficulty=" +
+                      obj.childNodes[9].value + "&type=multiple";
+        createGame();
       }
       // get current trivia array index and update main screen
-      function getQuestion(){
+      function setQuestion(){
         if (currentTriviaIndex < maxQuestions){         
           unMarkCorrectAnswer(); //unmark from any previous question
           $("#triviaWindowScore").html("Score: " + scoreRight); 
@@ -130,7 +138,7 @@ $(document).ready(function() {
         markCorrectAnswer();
         updateMainStatsWindow();
         currentTriviaIndex++;
-        setTimeout(getQuestion, timeBetweenQuestions);
+        setTimeout(setQuestion, timeBetweenQuestions);
       }
       function markCorrectAnswer(){
         for (var i = 0; i < maxPossibleAnswers; i++) {
@@ -235,7 +243,7 @@ $(document).ready(function() {
         gameStarted = false;
         resetResultsTabs();
         resetTriviaWindow();
-        htmlCall = getGameType();
+        // htmlCall = setGameType();
         createGame();
       }      
       function resetTriviaWindow(){

@@ -77,17 +77,19 @@ tbody {
 
 /********** panel ***********/
 .panel-heading{
-  border-radius: 10px 10px 0 0;
+  border-radius: 15px 15px 0 0!important;
   border-color: teal!important;
 }
 .panel {
   width: 100%;
   line-height: 1.0;
-  margin: 0;
-  border-radius: 10px;  
+  margin: 0; 
+  border-color: teal!important;
+  border-radius: 15px!important;
 }
 .panel-body{
   background-color: #fff;
+  border-radius: 0 0 15px 15px!important;  
 }
 
 .row{
@@ -112,8 +114,6 @@ button {
   z-index: 100;
   position: fixed; 
   display: none;
-  border: solid 2px;
-  border-radius: 15px;
   top:25px;  
 }
 #infoBtn {
@@ -141,8 +141,6 @@ button {
   width: 90%;
   z-index: 99;
   position: fixed; 
-  border: solid 2px;
-  border-radius: 15px; 
   top:25px; 
   display: none;  
  }
@@ -185,10 +183,7 @@ button {
   background: #fff;
   z-index: 100;
   position: fixed; 
-  border-radius: 15px; 
   top:25px; 
   display: none;  
-  width: 50%;
-  height: 300px;
-  border-style: dotted;
+  width: 75%;
 }

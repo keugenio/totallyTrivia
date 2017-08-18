@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="assets/js/totallytrivia.js"></script> 
 
   <link rel="stylesheet" type="text/css" href="assets/css/reset.css">  
   <link rel="stylesheet" type="text/css" href="assets/css/totallytrivia.css">
@@ -69,16 +70,27 @@
   <div class="container d-flex justify-content-center align-middle">
     <div class="panel panel-info" id="gameSelect">  
       <div class="panel-heading" >
-        <div> Header </div>
+        <div> Select your Game </div>
       </div>  
       <div class="panel-body ">
         <div> 
-          <select>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
-          </select>
+          <form class="form" id="gameSelectForm">
+            <label for="trivia_category">Select Category: </label>
+            <select name="trivia_category" class="form-control">
+              <option value="any">Any Category</option>
+              <option value="9">General Knowledge</option><option value="10">Entertainment: Books</option><option value="11">Entertainment: Film</option><option value="12">Entertainment: Music</option><option value="13">Entertainment: Musicals &amp; Theatres</option><option value="14">Entertainment: Television</option><option value="15">Entertainment: Video Games</option><option value="16">Entertainment: Board Games</option><option value="17">Science &amp; Nature</option><option value="18">Science: Computers</option><option value="19">Science: Mathematics</option><option value="20">Mythology</option><option value="21">Sports</option><option value="22">Geography</option><option value="23">History</option><option value="24">Politics</option><option value="25">Art</option><option value="26">Celebrities</option><option value="27">Animals</option><option value="28">Vehicles</option><option value="29">Entertainment: Comics</option><option value="30">Science: Gadgets</option><option value="31">Entertainment: Japanese Anime &amp; Manga</option><option value="32">Entertainment: Cartoon &amp; Animations</option>   
+            </select>
+            <br>
+            <label for="trivia_difficulty">Select Difficulty: </label>
+            <select name="trivia_difficulty" class="form-control">
+              <option value="any">Any Difficulty</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <br>            
+            <input type="submit" value="Submit" class="center-block">
+          </form>
          </div>
       </div> <!-- panel-body -->
     </div> <!-- panel -->
@@ -130,7 +142,7 @@
   </div><!-- container -->
 
 
-  <script src="assets/js/totallytrivia.js"></script> 
+
 
 </body>
 </html>
