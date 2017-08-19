@@ -23,17 +23,17 @@ body{
 
 /* general tags */
 h1 {
-  font-family: 'Georgia', Times, Times New Roman, serif;
+  font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 28px;
 }
 
 h2 {
-  font-family: 'Georgia', Times, Times New Roman, serif;
+  font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 24px;
 }
 
 h3 {
-  font-family: 'Georgia', Times, Times New Roman, serif;
+  font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 20px;
 }
 a:link, a:visited {
@@ -52,6 +52,7 @@ figure:hover{
 #closeBtn:hover{
   font-size: 20px;
   font-weight: bold;
+  color: yellow;
 }
 .header{
   width: 100%;
@@ -59,7 +60,8 @@ figure:hover{
 
 .header-title{
   color: #fff;
-  padding: 20px;
+  font-family: Orbitron;
+  font-weight: bold;
 }
 .title{
   text-align: center;
@@ -73,6 +75,16 @@ tbody {
 }
 .table{
   margin: 0;
+}
+.material-icons.md-light { 
+  color: rgba(255, 255, 255, 1); 
+}
+.material-icons.md-dark { 
+  color: teal; 
+}
+.material-icons:hover{
+  font-weight: bold;
+  font-size: 24px;
 }
 
 /********** panel ***********/
@@ -178,7 +190,8 @@ button {
   height: 10px;
 }
 #resultsWindow{
-  z-index: 
+  z-index: 10;
+  padding: 25px;
 }
 #results{
   padding: 10px;

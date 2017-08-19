@@ -6,6 +6,8 @@
 
   <!-- Bootstrap File -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- JQuery -->
 
@@ -22,16 +24,15 @@
   <audio id="incorrect" src="assets/audio/incorrect.wav"></audio>  
   <!-- Main Window -->
 
-    <div class="header">
-      <h1 class="text-center header-title"><strong>Totally Trivia</strong></h1>     
-    </div>
-
     <!-- (Current Stats and previous questions)-->
     <div class="row" id="resultsWindow">
       <div class="col-md" style="padding: 0;">
         <div class="panel panel-primary display-area">
 
           <div class="panel-heading d-flex justify-content-end">                         
+            <div class="p-2 flex-first mr-auto">
+              <h2 class="header-title">TOTALtrivia</h2>
+            </div> 
             <div class="p-2 flex-first" id="correct">
               <h3 class="title" id="allTimeScoreRight">Correct:</h3>
             </div> 
@@ -48,7 +49,6 @@
           <div class="panel-body">
             <div class="container">
               <ul class="nav nav-tabs" id="resultTabs">
-           
               </ul>
               <div class="tab-content" id="resultContent">
              
@@ -66,10 +66,11 @@
   <!-- game select Window -->
   <div class="container d-flex justify-content-center align-middle">
     <div class="panel panel-info" id="gameSelect">  
-      <div class="panel-heading" >
-        <div> Select your Game </div>
+      <div class="panel-heading d-flex justify-content-end" >
+        <div class="p-2 mr-auto" ><h2>Select your Game</h2></div>
+        <div class="p-2" id="selectGameTypeBtn"><a href="#"><i class="material-icons md-dark">highlight_off</i></a></div>        
       </div>  
-      <div class="panel-body ">
+      <div class="panel-body">
         <div> 
           <form class="form" id="gameSelectForm">
             <label for="trivia_category">Select Category: </label>
@@ -143,10 +144,10 @@
     <div class="panel" id="info">
       <div class="info-heading panel-heading d-flex justify-content-end">
         <div class="mr-auto p-2">
-          <h3 class="text-center">How to Play Totally Trivia </h3>
+          <h3 class="text-center header-title">How to Play Totally Trivia </h3>
         </div>
         <div class="p-2"  id="infoWindowCloseBtn">
-            <a href="#" style="color: white">X</a>
+            <a href="#"><i class="material-icons md-light">highlight_off</i></a>
         </div>
       </div> <!-- panel-heading -->     
       <div class="panel-body ">

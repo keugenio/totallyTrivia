@@ -64,6 +64,10 @@ $(document).ready(function() {
          }
       });
  
+      $("#selectGameTypeBtn").on("click", function(){
+        $("#gameSelect").fadeToggle(false);
+      });
+
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
           var container = $("#info");
