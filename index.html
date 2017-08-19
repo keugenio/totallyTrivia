@@ -18,7 +18,8 @@
   <link rel="stylesheet" type="text/css" href="assets/css/totallytrivia.css">
 </head>
 <body>
-
+  <audio id="correct" src="assets/audio/correct.wav"></audio>
+  <audio id="incorrect" src="assets/audio/incorrect.wav"></audio>  
   <!-- Main Window -->
 
     <div class="header">
@@ -120,6 +121,7 @@
       <div class="panel-heading d-flex justify-content-around panel-info">
         <div class="p-2 title"><h2 id="triviaWindowScore"></h2></div>
         <div class="p-2 title"><h2 id="triviaWindowStatus"></h2></div>
+        <div class="p-2 title"><h2 id="triviaWindowClock" class="clock">00:15</h2></div>
       </div> <!-- panel-heading -->     
       <div class="panel-body ">
         <div class="d-flex-row text-center" id="question">Current Question</div>
@@ -158,9 +160,5 @@
       </div> <!-- panel-body -->
     </div> <!-- panel -->
   </div><!-- container -->
-
-
-
-
 </body>
 </html>

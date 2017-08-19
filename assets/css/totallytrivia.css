@@ -129,6 +129,16 @@ button {
 .info p{
   padding-bottom: 15px;
 }
+@font-face {
+    font-family: digital-7;
+    src: url(../fonts/digital-7.ttf);
+}
+.clock{
+  font-family: digital-7;
+  background-color: teal;
+  padding: 2px;
+}
+
  /*******  trivia window *************/
  #question {
   font-size:32px;

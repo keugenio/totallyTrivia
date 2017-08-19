@@ -14,11 +14,11 @@ $(document).ready(function() {
       var allTimeScoreRight = 0;
       const maxQuestions=10; 
       const maxPossibleAnswers=4;
-      const timeBetweenQuestions = 100;
+      const timeBetweenQuestions = 1000;
+      const maxTime = 15;
       var currentGame=0; 
-
-// ********** create game ************************//
-
+      var timerOff = false;var currentTimer;
+      var currentTimer;      
 
 // ********* on click events ********************//
 
@@ -26,6 +26,9 @@ $(document).ready(function() {
       $(".answerField").on("click", function(){
           isGameStarted();
           evaluateGuess(this);
+          $("#triviaWindowClock").text("00:15");
+          clearInterval(currentTimer);
+
       });
 
       $("#infoBtn").on("click", function(){
@@ -61,7 +64,6 @@ $(document).ready(function() {
          }
       });
  
-
       $(document).mouseup(function(e){
           // if the information div is open, toggle it close
           var container = $("#info");
@@ -143,6 +145,7 @@ $(document).ready(function() {
             $("#" + i).html(triviaAnswers[i]);
             $("#" + i).attr("value", i);
           }
+          timerOn();
         }
         else {
           $("#triviaWindowScore").html("Score: " + scoreRight);           
@@ -159,9 +162,12 @@ $(document).ready(function() {
           scoreRight++;
           allTimeScoreRight++
           triviaArray[currentTriviaIndex].player_result = "correct";
+          $("#correct")[0].play();
         }
-        else
-          triviaArray[currentTriviaIndex].player_result = "incorrect";          
+        else{
+          triviaArray[currentTriviaIndex].player_result = "incorrect";  
+          $("#incorrect")[0].play();       
+        }
 
         markCorrectAnswer();
         updateMainStatsWindow();
@@ -179,14 +185,15 @@ $(document).ready(function() {
             $("#"+i).css("opacity", 1);
         }
       }  
-
       function gameOver(){
         // game is done. push the category and difficulty to disabled array so no selection for future choice
-        // reset selection pulldown for next game
+        // reset selection pulldown for next game, reset the timer
         disabledCategories.push([$("#catSelect").val(),$("#catDifficulty").val()]);         
         $("#triviaWindow").fadeToggle(false);
         $("#catSelect").val('-1'); 
-        $("#catDifficulty").val('-1');         
+        $("#catDifficulty").val('-1');
+        $("#triviaWindowClock").text("00:15");
+        clearInterval(currentTimer);
       }
       function updateStats(){
         $("#scoreRight").html("Correct:" + scoreRight);
@@ -215,7 +222,6 @@ $(document).ready(function() {
         $("#allTimeWrong").text("Incorrect:"+ wrong); 
         $("#winPercent").text("Win Percentage:"+  percentage + "%");                
       }
- 
       function isGameStarted(){
         // if new game hasn't started yet, create a new tab for questions and answers on the main page
         // create a new menu link and new tab content div to hold those Q&A then start game
@@ -284,4 +290,22 @@ $(document).ready(function() {
         }
       }
 
+      function timerOn(){
+        var i = maxTime;
+        currentTimer=setInterval(function(){ updateTimer(i--) }, 1000)  
+      }
+
+      function updateTimer(i){
+        // time ran out, clear timer and evaluate a wrong answer to trigger "wrong" response
+        if (i<=0){
+            clearInterval(currentTimer);
+            $("#triviaWindowClock").text("00:15");
+            evaluateGuess(-1);
+            $("#incorrect")[0].play();                        
+        }   
+        if (i<10)
+          $("#triviaWindowClock").text("00:0" + i);
+        else
+          $("#triviaWindowClock").text("00:" + i);
+      }
 });
